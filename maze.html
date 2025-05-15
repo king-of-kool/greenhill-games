@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GameHub - Maze</title>
+  <title>GameHub - Pac-Man</title>
   <style>
     * {
       margin: 0;
@@ -35,34 +35,11 @@
       margin-bottom: 10px;
     }
 
-    #game {
+    #gameCanvas {
       background: #222;
       width: 400px;
       height: 400px;
       margin-bottom: 30px;
-      display: grid;
-      grid-template-columns: repeat(20, 20px);
-      grid-template-rows: repeat(20, 20px);
-      gap: 1px;
-    }
-
-    .cell {
-      width: 20px;
-      height: 20px;
-    }
-
-    .wall {
-      background-color: #444;
-    }
-
-    .dot {
-      background-color: #ffcc00;
-      border-radius: 50%;
-    }
-
-    .pacman {
-      background-color: #ffff00;
-      border-radius: 50%;
     }
 
     footer {
@@ -98,14 +75,15 @@
     <button onclick="window.location.href='menu.html'">⬅ Back to Game Menu</button>
   </header>
 
-  <div id="game"></div>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
 
   <footer>
     <p>&copy; 2025 GameHub. Enjoy the maze!</p>
   </footer>
 
   <script>
-    // JavaScript for Pac-Man logic (you can replace this part with Pac-Man logic)
+    // This is just a placeholder for Pac-Man. Full game logic will be more complex (maze generation, movement, ghosts).
+    // You can use libraries like Phaser.js to simplify implementation of game logic.
   </script>
 
 </body>
