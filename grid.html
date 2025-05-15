@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameHub - Grid</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1e1e2f;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      color: #4CAF50;
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+      margin-bottom: 10px;
+    }
+
+    #game {
+      background: #222;
+      width: 400px;
+      height: 400px;
+      margin-bottom: 30px;
+      display: grid;
+      grid-template-columns: repeat(20, 20px);
+      grid-template-rows: repeat(20, 20px);
+      gap: 1px;
+    }
+
+    .cell {
+      width: 20px;
+      height: 20px;
+    }
+
+    .wall {
+      background-color: #444;
+    }
+
+    .dot {
+      background-color: #ffcc00;
+      border-radius: 50%;
+    }
+
+    .pacman {
+      background-color: #ffff00;
+      border-radius: 50%;
+    }
+
+    footer {
+      font-size: 1rem;
+      text-align: center;
+      color: #fff;
+      margin-top: 40px;
+    }
+
+    button {
+      background-color: #4CAF50;
+      border: none;
+      padding: 15px 30px;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 220px;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Grid Game - 🟩</h1>
+    <button onclick="window.location.href='menu.html'">⬅ Back to Game Menu</button>
+  </header>
+
+  <div id="game"></div>
+
+  <footer>
+    <p>&copy; 2025 GameHub. Play and Enjoy!</p>
+  </footer>
+
+  <script>
+    // JavaScript for Snake Game logic (or Grid game as example)
+    // (You can adapt or replace this with Snake Game logic if needed)
+  </script>
+
+</body>
+</html>
