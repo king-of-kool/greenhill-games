@@ -37,8 +37,8 @@
 
     #gameCanvas {
       background: #222;
-      width: 400px;
-      height: 400px;
+      width: 320px;
+      height: 320px;
       margin-bottom: 30px;
     }
 
@@ -71,20 +71,119 @@
 <body>
 
   <header>
-    <h1>Maze Game - 🟨</h1>
+    <h1>Pac-Man Game - 🍒</h1>
     <button onclick="window.location.href='menu.html'">⬅ Back to Game Menu</button>
   </header>
 
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <canvas id="gameCanvas" width="320" height="320"></canvas>
 
   <footer>
-    <p>&copy; 2025 GameHub. Enjoy the maze!</p>
+    <p>&copy; 2025 GameHub. Gobble up the dots!</p>
   </footer>
 
   <script>
-    // This is just a placeholder for Pac-Man. Full game logic will be more complex (maze generation, movement, ghosts).
-    // You can use libraries like Phaser.js to simplify implementation of game logic.
-  </script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const gridSize = 16;
+    const rows = 20;
+    const cols = 20;
 
+    const pacman = {
+      x: 10,
+      y: 10,
+      color: 'yellow',
+      direction: 'right',
+      speed: 1
+    };
+
+    const pellets = [];
+    const ghost = {
+      x: 5,
+      y: 5,
+      color: 'red',
+      direction: 'down',
+      speed: 0.5
+    };
+
+    function generatePellets() {
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          if (Math.random() < 0.1) {
+            pellets.push({ x: j, y: i });
+          }
+        }
+      }
+    }
+
+    function drawBoard() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw pacman
+      ctx.beginPath();
+      ctx.arc(pacman.x * gridSize + gridSize / 2, pacman.y * gridSize + gridSize / 2, gridSize / 2, 0.2 * Math.PI, 1.8 * Math.PI);
+      ctx.fillStyle = pacman.color;
+      ctx.fill();
+
+      // Draw ghost
+      ctx.beginPath();
+      ctx.arc(ghost.x * gridSize + gridSize / 2, ghost.y * gridSize + gridSize / 2, gridSize / 2, 0, 2 * Math.PI);
+      ctx.fillStyle = ghost.color;
+      ctx.fill();
+
+      // Draw pellets
+      ctx.fillStyle = 'white';
+      pellets.forEach(pellet => {
+        ctx.beginPath();
+        ctx.arc(pellet.x * gridSize + gridSize / 2, pellet.y * gridSize + gridSize / 2, gridSize / 6, 0, 2 * Math.PI);
+        ctx.fill();
+      });
+    }
+
+    function updatePacman() {
+      if (pacman.direction === 'up') pacman.y -= pacman.speed;
+      if (pacman.direction === 'down') pacman.y += pacman.speed;
+      if (pacman.direction === 'left') pacman.x -= pacman.speed;
+      if (pacman.direction === 'right') pacman.x += pacman.speed;
+
+      if (pacman.x >= cols) pacman.x = 0;
+      if (pacman.x < 0) pacman.x = cols - 1;
+      if (pacman.y >= rows) pacman.y = 0;
+      if (pacman.y < 0) pacman.y = rows - 1;
+    }
+
+    function updateGhost() {
+      ghost.y += ghost.speed;
+      if (ghost.y >= rows) ghost.y = 0;
+    }
+
+    function checkCollisions() {
+      // Check if Pac-Man collects a pellet
+      for (let i = 0; i < pellets.length; i++) {
+        if (pacman.x === pellets[i].x && pacman.y === pellets[i].y) {
+          pellets.splice(i, 1);
+          break;
+        }
+      }
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'ArrowUp') pacman.direction = 'up';
+      if (event.key === 'ArrowDown') pacman.direction = 'down';
+      if (event.key === 'ArrowLeft') pacman.direction = 'left';
+      if (event.key === 'ArrowRight') pacman.direction = 'right';
+    }
+
+    document.addEventListener('keydown', handleKeyPress);
+
+    function gameLoop() {
+      drawBoard();
+      updatePacman();
+      updateGhost();
+      checkCollisions();
+    }
+
+    generatePellets();
+    setInterval(gameLoop, 1000 / 15); // 15 FPS
+  </script>
 </body>
 </html>

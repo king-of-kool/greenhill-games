@@ -35,7 +35,7 @@
       margin-bottom: 10px;
     }
 
-    canvas {
+    #gameCanvas {
       background: #222;
       width: 320px;
       height: 640px;
@@ -82,9 +82,145 @@
   </footer>
 
   <script>
-    // This would need a full Tetris implementation with JavaScript logic.
-    // Due to its complexity, I recommend looking up a Tetris implementation if you want to fully develop it.
-  </script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const rows = 20;
+    const columns = 10;
+    const blockSize = 32;
+    const board = Array.from({ length: rows }, () => Array(columns).fill(0));
+    const tetrominoes = [
+      { color: 'cyan', shape: [[1, 1, 1, 1]] }, // I
+      { color: 'blue', shape: [[1, 1], [1, 1]] }, // O
+      { color: 'orange', shape: [[0, 1, 0], [1, 1, 1]] }, // T
+      { color: 'green', shape: [[1, 1, 0], [0, 1, 1]] }, // S
+      { color: 'red', shape: [[0, 1, 1], [1, 1, 0]] }, // Z
+      { color: 'purple', shape: [[1, 0, 0], [1, 1, 1]] }, // L
+      { color: 'yellow', shape: [[0, 0, 1], [1, 1, 1]] } // J
+    ];
+    let currentPiece = getRandomPiece();
+    let pieceX = Math.floor(columns / 2) - Math.floor(currentPiece.shape[0].length / 2);
+    let pieceY = 0;
+    let gameOver = false;
 
+    function drawBoard() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < columns; x++) {
+          if (board[y][x]) {
+            ctx.fillStyle = board[y][x];
+            ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+          }
+        }
+      }
+    }
+
+    function drawPiece() {
+      ctx.fillStyle = currentPiece.color;
+      for (let y = 0; y < currentPiece.shape.length; y++) {
+        for (let x = 0; x < currentPiece.shape[y].length; x++) {
+          if (currentPiece.shape[y][x]) {
+            ctx.fillRect((pieceX + x) * blockSize, (pieceY + y) * blockSize, blockSize, blockSize);
+          }
+        }
+      }
+    }
+
+    function rotatePiece() {
+      const newShape = currentPiece.shape[0].map((_, index) => currentPiece.shape.map(row => row[index]));
+      currentPiece.shape = newShape.reverse();
+      if (checkCollision()) {
+        currentPiece.shape = currentPiece.shape.reverse().map(row => row.reverse());
+      }
+    }
+
+    function movePieceDown() {
+      pieceY++;
+      if (checkCollision()) {
+        pieceY--;
+        placePiece();
+        clearLines();
+        currentPiece = getRandomPiece();
+        pieceX = Math.floor(columns / 2) - Math.floor(currentPiece.shape[0].length / 2);
+        pieceY = 0;
+        if (checkCollision()) {
+          gameOver = true;
+        }
+      }
+    }
+
+    function checkCollision() {
+      for (let y = 0; y < currentPiece.shape.length; y++) {
+        for (let x = 0; x < currentPiece.shape[y].length; x++) {
+          if (currentPiece.shape[y][x]) {
+            const boardX = pieceX + x;
+            const boardY = pieceY + y;
+            if (boardX < 0 || boardX >= columns || boardY >= rows || board[boardY] && board[boardY][boardX]) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    function placePiece() {
+      for (let y = 0; y < currentPiece.shape.length; y++) {
+        for (let x = 0; x < currentPiece.shape[y].length; x++) {
+          if (currentPiece.shape[y][x]) {
+            board[pieceY + y][pieceX + x] = currentPiece.color;
+          }
+        }
+      }
+    }
+
+    function clearLines() {
+      for (let y = rows - 1; y >= 0; y--) {
+        if (board[y].every(cell => cell)) {
+          board.splice(y, 1);
+          board.unshift(Array(columns).fill(0));
+        }
+      }
+    }
+
+    function getRandomPiece() {
+      const randomIndex = Math.floor(Math.random() * tetrominoes.length);
+      return tetrominoes[randomIndex];
+    }
+
+    function handleKeyPress(event) {
+      if (gameOver) return;
+
+      if (event.key === 'ArrowLeft') {
+        pieceX--;
+        if (checkCollision()) pieceX++;
+      } else if (event.key === 'ArrowRight') {
+        pieceX++;
+        if (checkCollision()) pieceX--;
+      } else if (event.key === 'ArrowDown') {
+        movePieceDown();
+      } else if (event.key === 'ArrowUp') {
+        rotatePiece();
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyPress);
+
+    function gameLoop() {
+      if (gameOver) {
+        ctx.fillStyle = '#fff';
+        ctx.font = '48px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
+        return;
+      }
+
+      drawBoard();
+      drawPiece();
+      movePieceDown();
+    }
+
+    setInterval(gameLoop, 1000 / 2); // 2 frames per second
+  </script>
 </body>
 </html>
